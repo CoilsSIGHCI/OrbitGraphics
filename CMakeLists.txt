@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(orbit VERSION 0.1.0 LANGUAGES C CXX)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(default_build_type "Debug")
+    message(STATUS "No build type selected, defaulting to ${default_build_type}")
+    set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
+endif()
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
+
 add_executable(orbit
     main.c
     cocoa_platform.mm
@@ -79,7 +88,7 @@ if(APPLE)
     )
 
     #BGFX LINKS LOGIC
-    target_link_directories(orbit PRIVATE ./Library/bgfx/.build/osx-arm64/bin/)
+    target_link_directories(orbit PRIVATE ${PROJECT_SOURCE_DIR}/Library/bgfx/.build/osx-arm64/bin)
 
     if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
         if(NOT EXISTS "${PROJECT_SOURCE_DIR}/Library/bgfx/.build/osx-arm64/bin/libbgfxDebug.a")
